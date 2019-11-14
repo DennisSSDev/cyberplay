@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "nodemon",
         "build": "yarn global add cross-env && next build && tsc --project tsconfig.server.json",
-        "start": "cross-env NODE_ENV=production node dist/index.js",
+        "start": "cross-env NODE_ENV=production node dist/index.js -p $PORT",
         "pretest": "eslint ./server/*.ts --fix && eslint ./server/**/*.ts --fix && eslint ./pages/**/*.jsx --fix && eslint ./pages/*.jsx --fix",
         "test": "echo \"Test complete\""
     },
