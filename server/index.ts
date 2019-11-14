@@ -1,31 +1,73 @@
 import express from 'express';
 import next from 'next';
+import path from 'path';
+import url from 'url';
+import cluster from 'cluster';
+import os from 'os';
+
+const numCPUs = os.cpus().length;
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
+const port = process.env.PORT || 3000;
 
-app.prepare()
-    .then((): void => {
+// Multi-process to utilize all CPU cores.
+if (!dev && cluster.isMaster) {
+    console.log(`Node cluster master ${process.pid} is running`);
+
+    // Fork workers.
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
+
+    cluster.on('exit', (worker, code, signal) => {
+        console.error(`Node cluster worker ${worker.process.pid} exited: code ${code}, signal ${signal}`);
+    });
+} else {
+    const nextApp = next({ dir: '.', dev });
+    const nextHandler = nextApp.getRequestHandler();
+
+    nextApp.prepare().then(() => {
         const server = express();
 
-        server.get('/test', (_, res): void => {
-            res.json({ ok: 'it works' });
-        });
+        if (!dev) {
+            // Enforce SSL & HSTS in production
+            server.use((req, res, next) => {
+                const proto = req.headers['x-forwarded-proto'];
+                if (proto === 'https') {
+                    res.set({
+                        'Strict-Transport-Security': 'max-age=31557600', // one-year
+                    });
+                    return next();
+                }
+                res.redirect('https://' + req.headers.host + req.url);
+            });
+        }
 
-        server.get(
-            '*',
-            (req, res): Promise<void> => {
-                return handle(req, res);
-            },
+        // Static files
+        // https://github.com/zeit/next.js/tree/4.2.3#user-content-static-file-serving-eg-images
+        server.use(
+            '/static',
+            express.static(path.join(__dirname, 'static'), {
+                maxAge: dev ? '0' : '365d',
+            }),
         );
 
-        server.listen(3000, (err): void => {
-            if (err) throw err;
-            console.log('> Ready on http://localhost:3000');
+        // Example server-side routing
+        server.get('/test', (_, res) => {
+            return res.json({ ok: 'success' });
         });
-    })
-    .catch((ex): void => {
-        console.error(ex.stack);
-        process.exit(1);
+
+        // Default catch-all renders Next app
+        server.get('*', (req, res) => {
+            // res.set({
+            //   'Cache-Control': 'public, max-age=3600'
+            // });
+            const parsedUrl = url.parse(req.url, true);
+            nextHandler(req, res, parsedUrl);
+        });
+
+        server.listen(port, () => {
+            console.log(`Listening on http://localhost:${port}`);
+        });
     });
+}
