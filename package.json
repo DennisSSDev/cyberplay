@@ -5,7 +5,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "nodemon",
-        "build": "yarn install --global cross-env && next build && tsc --project tsconfig.server.json",
+        "build": "yarn global add cross-env && next build && tsc --project tsconfig.server.json",
         "start": "cross-env NODE_ENV=production node dist/index.js",
         "pretest": "eslint ./server/*.ts --fix && eslint ./server/**/*.ts --fix && eslint ./pages/**/*.jsx --fix && eslint ./pages/*.jsx --fix",
         "test": "echo \"Test complete\""
