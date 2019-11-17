@@ -14,7 +14,7 @@ import {
 } from 'arwes';
 
 import './static/index.css';
-import { HeaderComponent } from './components/header';
+import HeaderComponent from './components/header/component';
 
 const mySounds = {
     shared: { volume: 1 }, // Shared sound settings

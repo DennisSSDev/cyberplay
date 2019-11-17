@@ -34,4 +34,5 @@ const VisualComponent = () => {
     );
 };
 
-export const HeaderComponent = VisualComponent;
+const HeaderComponent = VisualComponent;
+export default HeaderComponent;
