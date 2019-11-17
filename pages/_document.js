@@ -14,7 +14,8 @@ class MyDocument extends Document {
         return (
             <Html>
                 <Head>
-                    <meta name="CyberPlay" content="Roleplaying Cyberpunk Game" />
+                    <title>CyberPlay</title>
+                    <meta name="description" content="Roleplaying Cyberpunk Game" />
                     <link rel="shortcut icon" href="static/favicon.ico" />
                 </Head>
                 <body>
