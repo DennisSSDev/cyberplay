@@ -3,7 +3,7 @@ import { Header, Button, Link } from 'arwes';
 
 const VisualComponent = () => {
     return (
-        <Header animate>
+        <Header animate={false}>
             <div
                 style={{
                     display: 'flex',
@@ -17,12 +17,12 @@ const VisualComponent = () => {
                 </h1>
                 <div style={{ display: 'flex', flexDirection: 'row', marginRight: 50 }}>
                     <Link href="/login">
-                        <Button animate style={{ margin: 0, marginRight: 20, marginTop: 15 }}>
+                        <Button animate={false} style={{ margin: 0, marginRight: 20, marginTop: 15 }}>
                             Login
                         </Button>
                     </Link>
                     <Link href="/signup">
-                        <Button animate style={{ margin: 0, marginTop: 15 }}>
+                        <Button animate={false} style={{ margin: 0, marginTop: 15 }}>
                             Sign up
                         </Button>
                     </Link>

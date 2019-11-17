@@ -19,7 +19,7 @@ const Index = () => {
                     <Frame animate level={2} corners={4}>
                         <p style={{ marginLeft: 20 }}>
                             <Words animate animation={{ timeout: 2000 }}>
-                                A SciFi role-playing & texting game about finding your destiny at the world of
+                                A SciFi role-playing & texting game about finding your destiny in the world of
                                 Cyberpunk.
                             </Words>
                         </p>
