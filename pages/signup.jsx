@@ -6,7 +6,7 @@ import './static/index.css';
 import HeaderComponent from '../components/header/component';
 
 const avatars = ['Banshee', 'Snapes', 'Cross', 'Shadow', 'Weebz', 'Connor'];
-
+const theme = createTheme({ animTime: 500 });
 const SignUp = () => {
     const [formData, setFormData] = React.useState({});
 
@@ -14,9 +14,17 @@ const SignUp = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleRadioInput = e => {
+        setFormData({ ...formData, activeAvatar: e.target.value });
+    };
+
+    const submitFormData = () => {
+        console.log(formData);
+    };
+
     return (
-        <ThemeProvider animate={false} theme={createTheme()}>
-            <Arwes animate={false} background="/signup_back.jpeg">
+        <ThemeProvider theme={theme}>
+            <Arwes background="/signup_back.jpeg">
                 <div>
                     <HeaderComponent />
                 </div>
@@ -29,23 +37,28 @@ const SignUp = () => {
                         paddingBottom: 50,
                     }}
                 >
-                    <Frame animate={false} style={{ marginBottom: 20, textAlign: 'center' }}>
+                    <Frame style={{ marginBottom: 20, textAlign: 'center' }}>
                         <h1>Registration Form</h1>
                     </Frame>
-                    <Frame animate={false} level={2} corners={4}>
+                    <Frame level={2} corners={4}>
                         <Grommet
                             theme={{
                                 formField: { border: { color: '#029CBB', size: 'small' } },
                                 radioButton: { border: { width: '2px', color: '#029CBB' } },
                             }}
                         >
-                            <Form animate={false}>
+                            <Form>
                                 <Box margin="medium" align="center">
                                     <h2>User Data</h2>
-                                    <Line animate={false} />
+                                    <Line />
                                 </Box>
                                 <Box width="medium" flex fill>
-                                    <FormField name="name" label="UserName" type="text" onChange={handleUserInput} />
+                                    <FormField
+                                        name="username"
+                                        label="UserName"
+                                        type="text"
+                                        onChange={handleUserInput}
+                                    />
                                     <FormField name="pwd" label="Password" type="password" onChange={handleUserInput} />
                                     <FormField
                                         name="pwd2"
@@ -56,7 +69,7 @@ const SignUp = () => {
                                 </Box>
                                 <Box margin="medium" align="center">
                                     <h2>Character Data</h2>
-                                    <Line animate={false} />
+                                    <Line />
                                 </Box>
                                 <Box width="medium" flex fill>
                                     <FormField
@@ -95,9 +108,7 @@ const SignUp = () => {
                                         '/male3.jpeg',
                                     ].map((val, index) => (
                                         <div key={val} style={{ padding: 20, maxWidth: 700 }}>
-                                            <Image animate={false} resources={val}>
-                                                {avatars[index]}
-                                            </Image>
+                                            <Image resources={val}>{avatars[index]}</Image>
                                         </div>
                                     ))}
                                 </div>
@@ -108,11 +119,18 @@ const SignUp = () => {
                                     direction="row"
                                     name="doc"
                                     options={avatars}
-                                    value={'one'}
-                                    onChange={handleUserInput}
+                                    value={formData.activeAvatar}
+                                    onChange={handleRadioInput}
                                 />
                                 <Box align="center" margin="medium">
-                                    <Button color="#25DAFD" type="submit" primary label="Submit" layer="success">
+                                    <Button
+                                        color="#25DAFD"
+                                        type="submit"
+                                        primary
+                                        label="Submit"
+                                        layer="success"
+                                        onClick={submitFormData}
+                                    >
                                         Enter the Cyberpunk
                                     </Button>
                                 </Box>
