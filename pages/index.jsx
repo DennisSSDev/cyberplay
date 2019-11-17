@@ -5,9 +5,11 @@ import { ThemeProvider, createTheme, Arwes, Logo, Words, Frame, Button, Link } f
 import './static/index.css';
 import HeaderComponent from '../components/header/component';
 
+const theme = createTheme();
+
 const Index = () => {
     return (
-        <ThemeProvider theme={createTheme()}>
+        <ThemeProvider theme={theme}>
             <Arwes animate background="/cyberback.jpg">
                 <div>
                     <HeaderComponent />
