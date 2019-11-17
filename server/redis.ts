@@ -16,7 +16,6 @@ export const utilConnectRedis = (redisURL: UrlWithStringQuery, redisPASS: string
 
     // Asynchronous event handlers for redis
 
-    // when connected successfully
     redisClient.on('connect', () => {
         console.log('redis connected');
     });
