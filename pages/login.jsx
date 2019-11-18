@@ -3,20 +3,21 @@ import React from 'react';
 import { ThemeProvider, createTheme, Arwes, Frame, Button } from 'arwes';
 import { Form, FormField, Grommet, Box } from 'grommet';
 import './static/index.css';
+import { PropTypes } from 'prop-types';
 import HeaderComponent from '../components/header/component';
-import { useLoaded } from '../util';
+import { useLoaded, post, request } from '../util';
 
 const theme = createTheme({ animTime: 500 });
 
-const LogIn = () => {
+const LogIn = ({ csrf }) => {
     const [formData, setFormData] = React.useState({});
 
     const handleUserInput = e => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const submitFormData = () => {
-        console.log(formData);
+    const submitFormData = async () => {
+        post('/login', formData, csrf);
     };
     const loaded = useLoaded();
 
@@ -24,7 +25,7 @@ const LogIn = () => {
         <>
             {loaded && (
                 <ThemeProvider theme={theme}>
-                    <Arwes background="/login_back.jpeg">
+                    <Arwes animate background="/login_back.jpeg">
                         <div>
                             <HeaderComponent />
                         </div>
@@ -40,7 +41,7 @@ const LogIn = () => {
                             <Frame style={{ marginBottom: 20, textAlign: 'center' }}>
                                 <h1>Welcome Back</h1>
                             </Frame>
-                            <Frame level={2} corners={4}>
+                            <Frame level={1} corners={4}>
                                 <Grommet
                                     theme={{
                                         formField: { border: { color: '#029CBB', size: 'small' } },
@@ -56,7 +57,7 @@ const LogIn = () => {
                                                 onChange={handleUserInput}
                                             />
                                             <FormField
-                                                name="pwd"
+                                                name="pass"
                                                 label="Password"
                                                 type="password"
                                                 onChange={handleUserInput}
@@ -83,6 +84,17 @@ const LogIn = () => {
             )}
         </>
     );
+};
+
+LogIn.propTypes = {
+    csrf: PropTypes.string,
+};
+
+LogIn.getInitialProps = async () => {
+    const res = await request('/token');
+
+    const json = await res.json();
+    return { csrf: json.csrfToken };
 };
 
 export default LogIn;

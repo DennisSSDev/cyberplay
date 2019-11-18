@@ -40,7 +40,7 @@ const login = (req: Request, res: Response) => {
         if (reqC && reqC.session) {
             reqC.session.account = AccountModel.toAPI(account);
         }
-        return res.json({ redirect: '/dashboard' });
+        return res.redirect('/dashboard');
     });
 };
 
@@ -71,7 +71,7 @@ const signup = (req: Request, res: Response) => {
             if (reqC && reqC.session) {
                 reqC.session.account = AccountModel.toAPI(newAccount);
             }
-            res.json({ redirect: '/dashboard' });
+            return res.redirect('/dashboard');
         });
         savePromise.catch(err => {
             if (err.code === 11000) {

@@ -8,7 +8,7 @@ import { useLoaded } from '../util';
 
 const theme = createTheme();
 
-const Index = () => {
+const Dashboard = () => {
     const loaded = useLoaded();
     return (
         <>
@@ -45,4 +45,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default Dashboard;

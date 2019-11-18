@@ -4,12 +4,14 @@ import { ThemeProvider, createTheme, Arwes, Frame, Button, Line, Image } from 'a
 import { Form, FormField, Grommet, Box, RadioButtonGroup } from 'grommet';
 import './static/index.css';
 import HeaderComponent from '../components/header/component';
-import { useLoaded } from '../util';
+import { PropTypes } from 'prop-types';
+import { post, useCSRF } from '../util';
 
 const avatars = ['Banshee', 'Snapes', 'Cross', 'Shadow', 'Weebz', 'Connor'];
 const theme = createTheme({ animTime: 500 });
 const SignUp = () => {
     const [formData, setFormData] = React.useState({});
+    const csrf = useCSRF();
 
     const handleUserInput = e => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,13 +22,12 @@ const SignUp = () => {
     };
 
     const submitFormData = () => {
-        console.log(formData);
+        post('/signup', formData, csrf);
     };
-    const loaded = useLoaded();
 
     return (
         <>
-            {loaded && (
+            {csrf && (
                 <ThemeProvider theme={theme}>
                     <Arwes background="/signup_back.jpeg">
                         <div>
@@ -64,13 +65,13 @@ const SignUp = () => {
                                                 onChange={handleUserInput}
                                             />
                                             <FormField
-                                                name="pwd"
+                                                name="pass"
                                                 label="Password"
                                                 type="password"
                                                 onChange={handleUserInput}
                                             />
                                             <FormField
-                                                name="pwd2"
+                                                name="pass2"
                                                 label="Retype Password"
                                                 type="password"
                                                 onChange={handleUserInput}
@@ -152,6 +153,10 @@ const SignUp = () => {
             )}
         </>
     );
+};
+
+SignUp.propTypes = {
+    csrf: PropTypes.string,
 };
 
 export default SignUp;

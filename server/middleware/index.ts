@@ -5,11 +5,13 @@ interface ResponseError extends Error {
     code?: string;
 }
 
-export const csrfCheck = (err: ResponseError, _: Request, __: Response, next: NextFunction): boolean => {
+export const csrfCheck = (err: ResponseError, req: Request, res: Response, next: NextFunction): boolean => {
     if (err.code !== 'EBADCSRFTOKEN') {
         next(err);
         return true;
     }
+    console.log(res.writable);
+    console.log(req.headers);
     console.log('Missing CSRF token');
     return false;
 };
@@ -35,32 +37,6 @@ export const isLoggedIn = (req: Request, res: Response, next: NextFunction): voi
         return next();
     }
     res.redirect('/login');
-    return;
-};
-
-/**
- * authentication check
- * if the user doesn't have a valid session, redirect them to the login
- */
-export const auth = (req: Request, res: Response): void => {
-    if (req.session && req.session.account) {
-        res.json({ redirect: '' });
-        return;
-    }
-    res.json({ redirect: '/login' });
-    return;
-};
-
-/**
- * detect if this is a public session (i.e, no session)
- * if this is not a public session, redirect user to the dashboard
- */
-export const pub = (req: Request, res: Response): void => {
-    if (!req.session || !req.session.account) {
-        res.json({ redirect: '' });
-        return;
-    }
-    res.json({ redirect: '/dashboard' });
     return;
 };
 
