@@ -117,7 +117,7 @@ if (!dev && cluster.isMaster) {
 
         server.use(favicon('public/favicon.ico'));
 
-        router({ server, nextHandler });
+        router({ server, nextHandler, app: nextApp });
 
         server.listen(port, () => {
             console.log(`Listening on port: ${port}`);

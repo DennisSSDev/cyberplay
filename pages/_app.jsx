@@ -4,19 +4,15 @@ import Head from 'next/head';
 import React from 'react';
 
 export default class MyApp extends App {
-    static async getInitialProps({ Component, ctx }) {
-        let pageProps = {};
+    componentDidMount() {
+        const style = document.getElementById('server-side-styles');
 
-        if (Component.getInitialProps) {
-            pageProps = await Component.getInitialProps(ctx);
+        if (style) {
+            style.parentNode.removeChild(style);
         }
-
-        return { pageProps };
     }
-
     render() {
         const { Component, pageProps } = this.props;
-
         return (
             <>
                 <Head>

@@ -1,9 +1,11 @@
 import { Express } from 'express';
 import url from 'url';
 import { IncomingMessage, ServerResponse } from 'http';
+import Server from 'next/dist/next-server/server/next-server';
 
 interface RouterInput {
     server: Express;
+    app: Server;
     nextHandler: (
         req: IncomingMessage,
         res: ServerResponse,

@@ -1,13 +1,12 @@
 // index page that next.js will use
 import React from 'react';
-import { ThemeProvider, createTheme, Arwes, Logo, Words, Frame, Button, Link } from 'arwes';
+import { Logo, Words, Frame, Button, Link, createTheme, ThemeProvider, Arwes } from 'arwes';
 
 import './static/index.css';
 import HeaderComponent from '../components/header/component';
 
-const theme = createTheme();
-
 const Index = () => {
+    const theme = createTheme();
     return (
         <ThemeProvider theme={theme}>
             <Arwes animate background="/cyberback.jpg">
@@ -21,8 +20,7 @@ const Index = () => {
                     <Frame animate level={2} corners={4}>
                         <p style={{ marginLeft: 20 }}>
                             <Words animate animation={{ timeout: 2000 }}>
-                                A SciFi role-playing & texting game about finding your destiny in the world of
-                                Cyberpunk.
+                                A SciFi role-playing & texting game abou finding your destiny in the world of Cyberpunk.
                             </Words>
                         </p>
                     </Frame>
