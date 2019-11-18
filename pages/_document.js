@@ -1,8 +1,11 @@
 import React from 'react';
-import Document from 'next/document';
-import { SheetsRegistry, JssProvider, createGenerateId } from 'react-jss';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { JssProvider, createGenerateId, SheetsRegistry } from 'react-jss';
 
-export default class JssDocument extends Document {
+/**
+ * Override to be able to serve favicon
+ */
+class MyDocument extends Document {
     static async getInitialProps(ctx) {
         const registry = new SheetsRegistry();
         const generateId = createGenerateId();
@@ -28,19 +31,21 @@ export default class JssDocument extends Document {
             ),
         };
     }
+
+    render() {
+        return (
+            <Html>
+                <Head>
+                    <meta name="description" content="Roleplaying Cyberpunk Game" />
+                    <link rel="shortcut icon" href="static/favicon.ico" />
+                </Head>
+                <body>
+                    <Main />
+                    <NextScript />
+                </body>
+            </Html>
+        );
+    }
 }
-/*
-render() {
-    return (
-        <Html>
-            <Head>
-                <meta name="description" content="Roleplaying Cyberpunk Game" />
-                <link rel="shortcut icon" href="static/favicon.ico" />
-            </Head>
-            <body>
-                <Main />
-                <NextScript />
-            </body>
-        </Html>
-    );
-}*/
+
+export default MyDocument;
