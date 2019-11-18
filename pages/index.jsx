@@ -1,6 +1,6 @@
 // index page that next.js will use
 import React from 'react';
-import { Logo, Words, Frame, Button, Link, createTheme, ThemeProvider, Arwes } from 'arwes';
+import { Logo, Words, Frame, Button, Link } from 'arwes';
 
 import './static/index.css';
 import HeaderComponent from '../components/header/component';
