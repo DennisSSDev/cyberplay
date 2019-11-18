@@ -1,10 +1,6 @@
 import React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { createGenerateId, SheetsRegistry, JssProvider } from 'react-jss';
-
-/**
- * Override to be able to serve favicon
- */
+import Document from 'next/document';
+import { SheetsRegistry, JssProvider, createGenerateId } from 'react-jss';
 
 export default class JssDocument extends Document {
     static async getInitialProps(ctx) {
@@ -32,19 +28,19 @@ export default class JssDocument extends Document {
             ),
         };
     }
-
-    render() {
-        return (
-            <Html>
-                <Head>
-                    <meta name="description" content="Roleplaying Cyberpunk Game" />
-                    <link rel="shortcut icon" href="static/favicon.ico" />
-                </Head>
-                <body>
-                    <Main />
-                    <NextScript />
-                </body>
-            </Html>
-        );
-    }
 }
+/*
+render() {
+    return (
+        <Html>
+            <Head>
+                <meta name="description" content="Roleplaying Cyberpunk Game" />
+                <link rel="shortcut icon" href="static/favicon.ico" />
+            </Head>
+            <body>
+                <Main />
+                <NextScript />
+            </body>
+        </Html>
+    );
+}*/
