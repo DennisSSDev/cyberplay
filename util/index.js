@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import fetch from 'isomorphic-unfetch';
-
 // todo: change for deployment
 const fetchURL = 'https://cyber-play.herokuapp.com';
 
@@ -24,7 +23,6 @@ export const useCSRF = () => {
     const getCSRF = async () => {
         const res = await request('/token');
         const json = await res.json();
-        console.log(json);
         setCSRF(json.csrfToken);
     };
     useEffect(() => {
@@ -32,6 +30,20 @@ export const useCSRF = () => {
     }, []);
     return csrf;
 };
+
+/*
+export const useAuth = () => {
+    const [auth, setAuth] = useState(false);
+    const getAuth = async () => {
+        const res = await request('/auth');
+        const json = await res.json();
+        setAuth(json.login);
+    };
+    useEffect(() => {
+        getAuth();
+    }, []);
+    return auth;
+};*/
 
 export const post = (endpoint, data, csrfToken) => {
     return fetch(`${fetchURL}${endpoint}`, {
@@ -45,12 +57,24 @@ export const post = (endpoint, data, csrfToken) => {
     });
 };
 
-export const postNoData = endpoint => {
-    return fetch(`${fetchURL}${endpoint}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-    });
+/**
+ * detects whether the request is coming from a user that is logged out.
+ * if the user is logged out, continue the request process
+ * otherwise reroute to dashboard
+ */
+export const isLoggedOut = (req, res) => {
+    if (req && req.session && req.session.account) {
+        res.redirect('/dashboard');
+        res.end();
+    }
+};
+
+/**
+ * check for whether the user is logged in
+ */
+export const isLoggedIn = (req, res) => {
+    if (req && (!req.session || !req.session.account)) {
+        res.redirect('/login');
+        res.end();
+    }
 };

@@ -3,12 +3,13 @@ import React from 'react';
 import { ThemeProvider, createTheme, Arwes, Frame, Button, Line, Image } from 'arwes';
 import { Form, FormField, Grommet, Box, RadioButtonGroup } from 'grommet';
 import './static/index.css';
-import HeaderComponent from '../components/header/component';
-import { PropTypes } from 'prop-types';
-import { post, useCSRF } from '../util';
+import HeaderComponent from './components/header/component';
+import { post, useCSRF, isLoggedOut } from '../util';
+import Router from 'next/router';
 
 const avatars = ['Banshee', 'Snapes', 'Cross', 'Shadow', 'Weebz', 'Connor'];
 const theme = createTheme({ animTime: 500 });
+
 const SignUp = () => {
     const [formData, setFormData] = React.useState({});
     const csrf = useCSRF();
@@ -21,10 +22,14 @@ const SignUp = () => {
         setFormData({ ...formData, activeAvatar: e.target.value });
     };
 
-    const submitFormData = () => {
-        post('/signup', formData, csrf);
+    const submitFormData = async () => {
+        const res = await post('/signup', formData, csrf);
+        if (!res.ok) return; // todo: show error message
+        const json = await res.json();
+        if (json.url) {
+            Router.push(json.url);
+        }
     };
-
     return (
         <>
             {csrf && (
@@ -155,8 +160,9 @@ const SignUp = () => {
     );
 };
 
-SignUp.propTypes = {
-    csrf: PropTypes.string,
+SignUp.getInitialProps = async ({ req, res }) => {
+    isLoggedOut(req, res);
+    return {};
 };
 
 export default SignUp;

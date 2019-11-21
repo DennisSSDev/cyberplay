@@ -36,11 +36,11 @@ const login = (req: Request, res: Response) => {
         if (err || !account) {
             return res.status(401).json({ error: 'incorrect username or password' });
         }
-        const reqC = req;
-        if (reqC && reqC.session) {
-            reqC.session.account = AccountModel.toAPI(account);
+        if (req && req.session) {
+            console.log('logged in');
+            req.session.account = AccountModel.toAPI(account);
         }
-        return res.redirect('/dashboard');
+        return res.json({ url: '/dashboard' });
     });
 };
 
@@ -67,11 +67,10 @@ const signup = (req: Request, res: Response) => {
         const newAccount = new AccountSchema(accountData);
         const savePromise = newAccount.save();
         savePromise.then(() => {
-            const reqC = req;
-            if (reqC && reqC.session) {
-                reqC.session.account = AccountModel.toAPI(newAccount);
+            if (req && req.session) {
+                req.session.account = AccountModel.toAPI(newAccount);
             }
-            return res.redirect('/dashboard');
+            return res.json({ url: '/dashboard' });
         });
         savePromise.catch(err => {
             if (err.code === 11000) {
@@ -86,10 +85,11 @@ const signup = (req: Request, res: Response) => {
  * kills the user's session and returns him into a public session
  */
 const logout = (req: Request, res: Response) => {
+    console.log("you're being logged out");
     try {
         if (req.session) {
             req.session.destroy(() => {});
-            res.json({ result: 'session disconnected' });
+            res.json({ url: '/' });
             return;
         }
         throw new Error('there is no active session');

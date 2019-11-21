@@ -1,10 +1,9 @@
 // index page that next.js will use
 import React from 'react';
 import { Logo, Words, Frame, Button, Link, ThemeProvider, Arwes, createTheme } from 'arwes';
-
 import './static/index.css';
-import HeaderComponent from '../components/header/component';
-import { useLoaded } from '../util';
+import HeaderComponent from './components/header/component';
+import { useLoaded, isLoggedOut } from '../util';
 
 const theme = createTheme();
 
@@ -43,6 +42,11 @@ const Index = () => {
             )}
         </>
     );
+};
+
+Index.getInitialProps = async ({ req, res }) => {
+    isLoggedOut(req, res);
+    return {};
 };
 
 export default Index;

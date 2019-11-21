@@ -5,13 +5,11 @@ interface ResponseError extends Error {
     code?: string;
 }
 
-export const csrfCheck = (err: ResponseError, req: Request, res: Response, next: NextFunction): boolean => {
+export const csrfCheck = (err: ResponseError, _: Request, __: Response, next: NextFunction): boolean => {
     if (err.code !== 'EBADCSRFTOKEN') {
         next(err);
         return true;
     }
-    console.log(res.writable);
-    console.log(req.headers);
     console.log('Missing CSRF token');
     return false;
 };
@@ -25,7 +23,7 @@ export const isLoggedOut = (req: Request, res: Response, next: NextFunction): vo
     if (!req.session || !req.session.account) {
         return next();
     }
-    res.redirect('/dashboard');
+    res.status(400).json({ error: 'You need to be logged out to access this' });
     return;
 };
 
@@ -36,7 +34,7 @@ export const isLoggedIn = (req: Request, res: Response, next: NextFunction): voi
     if (req.session && req.session.account) {
         return next();
     }
-    res.redirect('/login');
+    res.status(400).json({ error: 'You need to be logged in to access this' });
     return;
 };
 

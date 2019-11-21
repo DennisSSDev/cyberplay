@@ -3,27 +3,32 @@ import React from 'react';
 import { ThemeProvider, createTheme, Arwes, Frame, Button } from 'arwes';
 import { Form, FormField, Grommet, Box } from 'grommet';
 import './static/index.css';
-import { PropTypes } from 'prop-types';
-import HeaderComponent from '../components/header/component';
-import { useLoaded, post, request } from '../util';
+import HeaderComponent from './components/header/component';
+import { post, useCSRF, isLoggedOut } from '../util';
+import Router from 'next/router';
 
 const theme = createTheme({ animTime: 500 });
 
-const LogIn = ({ csrf }) => {
+const LogIn = () => {
     const [formData, setFormData] = React.useState({});
+    const csrf = useCSRF();
 
     const handleUserInput = e => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const submitFormData = async () => {
-        post('/login', formData, csrf);
+        const res = await post('/login', formData, csrf);
+        if (!res.ok) return; // todo: show error message
+        const json = await res.json();
+        console.log(json);
+        if (json.url) {
+            Router.push(json.url);
+        }
     };
-    const loaded = useLoaded();
-
     return (
         <>
-            {loaded && (
+            {csrf && (
                 <ThemeProvider theme={theme}>
                     <Arwes animate background="/login_back.jpeg">
                         <div>
@@ -86,15 +91,9 @@ const LogIn = ({ csrf }) => {
     );
 };
 
-LogIn.propTypes = {
-    csrf: PropTypes.string,
-};
-
-LogIn.getInitialProps = async () => {
-    const res = await request('/token');
-
-    const json = await res.json();
-    return { csrf: json.csrfToken };
+LogIn.getInitialProps = async ({ req, res }) => {
+    isLoggedOut(req, res);
+    return {};
 };
 
 export default LogIn;

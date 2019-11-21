@@ -28,11 +28,7 @@ export const router = (input: RouterInput): void => {
     server.post('/login', isLoggedOut, Account.login);
     server.post('/signup', isLoggedOut, Account.signup);
 
-    server.get('/dashboard', (req, res) => {
-        input.app.render(req, res, '/dashboard');
-    });
-
-    // Default catch-all renders Next app
+    // Default catch-all renders Next app. It handles teh rendering
     server.get('*', (req, res) => {
         // res.set({
         //   'Cache-Control': 'public, max-age=3600'
