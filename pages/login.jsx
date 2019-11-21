@@ -3,7 +3,7 @@ import React from 'react';
 import { ThemeProvider, createTheme, Arwes, Frame, Button } from 'arwes';
 import { Form, FormField, Grommet, Box } from 'grommet';
 import './static/index.css';
-import HeaderComponent from './components/header/component';
+import HeaderComponent from './../components/header/component';
 import { post, useCSRF, isLoggedOut } from '../util';
 import Router from 'next/router';
 

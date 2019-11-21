@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header, Button, Link } from 'arwes';
 import Router from 'next/router';
-import { request } from '../../../util';
+import { request } from './../../util';
 
 const submitLogoutRequest = async () => {
     console.log('submitting');

@@ -2,7 +2,7 @@
 import React from 'react';
 import { ThemeProvider, Arwes, createTheme } from 'arwes';
 import './static/index.css';
-import { LoggedInHeaderComponent } from './components/header/component';
+import { LoggedInHeaderComponent } from './../components/header/component';
 import { useLoaded, isLoggedIn } from '../util';
 
 const theme = createTheme();
