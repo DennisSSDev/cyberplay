@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import fetch from 'isomorphic-unfetch';
 // todo: change for deployment
-const fetchURL = 'http://localhost:3000';
+const fetchURL = 'https://cyber-play.herokuapp.com/';
 
 export const useLoaded = () => {
     const [loaded, setLoaded] = useState(false);
