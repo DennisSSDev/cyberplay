@@ -25,7 +25,9 @@ export interface AccountModelInterface extends Document {
  */
 export type cb = (...args: any[]) => void;
 
-// check that the given password is valid
+/**
+ *  Check that the given password is valid
+ */
 const validatePassword = (doc: AccountModelInterface, password: string, callback: cb) => {
     const pass = doc.password;
     return crypto.pbkdf2(password, doc.salt, iterations, keyLength, 'RSA-SHA512', (_, hash) => {
@@ -61,7 +63,9 @@ const schema = new Schema({
 export const AccountSchema = mongoose.model<AccountModelInterface>('Account', schema);
 
 export class AccountModel {
-    // find user by the specified username
+    /**
+     * Find user by the specified username
+     */
     static findByUsername = (name: string, callback: cb) => {
         const search = {
             username: name,
@@ -69,7 +73,9 @@ export class AccountModel {
         return AccountSchema.findOne(search, callback);
     };
 
-    // generate password hash that will be stored in the db
+    /**
+     * Generate password hash that will be stored in the db
+     */
     static genHash = (password: string, callback: cb) => {
         const salt = crypto.randomBytes(saltLength);
 
@@ -78,12 +84,18 @@ export class AccountModel {
         );
     };
 
-    // convert document data and give it back to the current user session
+    /**
+     * Convert document data and give it back to the current user session
+     */
     static toAPI = (doc: AccountModelInterface) => ({
         username: doc.username,
         _id: doc._id,
     });
 
+    /**
+     * Change the user's password as long as the old password matches and
+     * the new password matches the retyped password
+     */
     static updateUserPassword = (id: string, oldPassword: string, newPassword: string, callback: cb) => {
         const userID = convertId(id);
         AccountSchema.findById(userID, (err, doc) => {
@@ -104,7 +116,9 @@ export class AccountModel {
         });
     };
 
-    // grabs user meta data such as username and creation date
+    /**
+     * Grabs user meta data such as username and creation date
+     */
     static getUserMetaInfo = (id: string, callback: cb) => {
         const _id = convertId(id);
 
@@ -113,7 +127,9 @@ export class AccountModel {
             .exec(callback);
     };
 
-    // call to make sure that the supplied data is from a valid user
+    /**
+     *  Call to make sure that the supplied data is from a valid user
+     */
     static authenticate = (username: string, password: string, callback: cb) =>
         AccountModel.findByUsername(username, (err, doc) => {
             if (err) {

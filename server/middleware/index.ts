@@ -23,6 +23,19 @@ export const isLoggedOut = (req: Request, res: Response, next: NextFunction): vo
     if (!req.session || !req.session.account) {
         return next();
     }
+    res.redirect('/dashboard');
+    return;
+};
+
+/**
+ * detects whether the request is coming from a user that is logged out.
+ * if the user is logged out, continue the request process
+ * otherwise reroute to dashboard
+ */
+export const isLoggedOutJSON = (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.session || !req.session.account) {
+        return next();
+    }
     res.status(400).json({ error: 'You need to be logged out to access this' });
     return;
 };
@@ -31,6 +44,17 @@ export const isLoggedOut = (req: Request, res: Response, next: NextFunction): vo
  * check for whether the user is logged in
  */
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction): void => {
+    if (req.session && req.session.account) {
+        return next();
+    }
+    res.redirect('/');
+    return;
+};
+
+/**
+ * check for whether the user is logged in
+ */
+export const isLoggedInJSON = (req: Request, res: Response, next: NextFunction): void => {
     if (req.session && req.session.account) {
         return next();
     }

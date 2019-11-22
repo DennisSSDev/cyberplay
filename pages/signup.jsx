@@ -19,13 +19,14 @@ const SignUp = () => {
     };
 
     const handleRadioInput = e => {
-        setFormData({ ...formData, activeAvatar: e.target.value });
+        setFormData({ ...formData, character: e.target.value });
     };
 
     const submitFormData = async () => {
         const res = await post('/signup', formData, csrf);
         if (!res.ok) return; // todo: show error message
         const json = await res.json();
+        console.log(json);
         if (json.url) {
             Router.push(json.url);
         }
@@ -134,7 +135,7 @@ const SignUp = () => {
                                             direction="row"
                                             name="doc"
                                             options={avatars}
-                                            value={formData.activeAvatar}
+                                            value={formData.character}
                                             onChange={handleRadioInput}
                                         />
                                         <Box align="center" margin="medium">

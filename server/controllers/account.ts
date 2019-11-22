@@ -1,6 +1,7 @@
 import isStringCheck from './../util/index';
 import { Response, Request } from 'express';
 import { AccountModel, AccountSchema } from '../models/account';
+import { UserDataSchema } from './../models/userdata';
 
 type func = (req: Request, res: Response) => void;
 
@@ -45,12 +46,13 @@ const login = (req: Request, res: Response) => {
 };
 
 /**
- * processes the user's login credentials and determines if the user is valid or not
+ * processes the user's login credentials
+ * and determines if the user is valid or not
  */
 const signup = (req: Request, res: Response) => {
-    const { username, pass, pass2 } = req.body;
+    const { username, pass, pass2, background, skills, motivation, character } = req.body;
     try {
-        isStringCheck(username, pass, pass2);
+        isStringCheck(username, pass, pass2, background, skills, motivation, character);
     } catch (err) {
         return res.status(400).json({ error: err.message });
     }
@@ -66,12 +68,33 @@ const signup = (req: Request, res: Response) => {
         };
         const newAccount = new AccountSchema(accountData);
         const savePromise = newAccount.save();
-        savePromise.then(() => {
-            if (req && req.session) {
-                req.session.account = AccountModel.toAPI(newAccount);
-            }
-            return res.json({ url: '/dashboard' });
-        });
+        savePromise
+            .then(() => {
+                if (req && req.session) {
+                    req.session.account = AccountModel.toAPI(newAccount);
+                    return;
+                }
+                throw Error('Invalid session');
+            })
+            .then(() => {
+                if (req && req.session) {
+                    const newUserData = new UserDataSchema({
+                        background,
+                        skills,
+                        motivation,
+                        character,
+                        owner: req.session.account._id,
+                    });
+                    newUserData
+                        .save()
+                        .then(() => {
+                            return res.json({ url: '/dashboard' });
+                        })
+                        .catch(err => {
+                            return res.status(400).json({ error: err });
+                        });
+                }
+            });
         savePromise.catch(err => {
             if (err.code === 11000) {
                 return res.status(400).json({ error: 'Username already used' });
@@ -100,7 +123,8 @@ const logout = (req: Request, res: Response) => {
 
 /**
  * handles the process of changing the user's password
- * if the old password matches the current password and the entered new password (twice) match, update happens
+ * if the old password matches the current password
+ * and the entered new password (twice) match, update happens
  */
 const changePassword = (req: Request, res: Response) => {
     if (!req.session || !req.session.account) {
