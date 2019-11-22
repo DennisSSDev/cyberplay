@@ -7,8 +7,9 @@ import { useLoaded, isLoggedIn } from '../util';
 
 const theme = createTheme();
 
-const Dashboard = () => {
+const Dashboard = props => {
     const loaded = useLoaded();
+    console.log(props);
     return (
         <>
             {loaded && (
@@ -24,9 +25,9 @@ const Dashboard = () => {
     );
 };
 
-Dashboard.getInitialProps = async ({ req, res }) => {
+Dashboard.getInitialProps = async ({ req, res, query }) => {
     isLoggedIn(req, res);
-    return {};
+    return query;
 };
 
 export default Dashboard;
