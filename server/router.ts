@@ -2,7 +2,7 @@ import { Express } from 'express';
 import url from 'url';
 import { IncomingMessage, ServerResponse } from 'http';
 import Server from 'next/dist/next-server/server/next-server';
-import { isLoggedIn, isLoggedOutJSON, isLoggedInJSON } from './middleware';
+import { isLoggedOutJSON, isLoggedInJSON } from './middleware';
 import Account from './controllers/account';
 import UserData from './controllers/userdata';
 
@@ -17,7 +17,7 @@ interface RouterInput {
 }
 
 export const router = (input: RouterInput): void => {
-    const { server, nextHandler, app } = input;
+    const { server, nextHandler } = input;
 
     // backend get
 
@@ -32,12 +32,6 @@ export const router = (input: RouterInput): void => {
     server.post('/signup', isLoggedOutJSON, Account.signup);
     server.post('/addmission', isLoggedInJSON, UserData.addMissionToUser);
     server.post('/makecreator', isLoggedInJSON, UserData.makeCreator);
-
-    server.get('/dashboard', isLoggedIn, (req, res) => {
-        const data = UserData.getUserData(req, res);
-        console.log(data);
-        app.render(req, res, '/dashboard', data);
-    });
 
     // Default catch-all renders Next app. It handles teh rendering
     server.get('*', (req, res) => {
