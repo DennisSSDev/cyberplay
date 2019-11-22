@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import fetch from 'isomorphic-unfetch';
 
-const fetchURL = process.env.NODE_ENV === 'production' ? `https://${window.location.host}` : 'http://localhost:3000';
+const fetchURL = process.env.NODE_ENV === 'production' ? `https://cyber-play.herokuapp.com` : 'http://localhost:3000';
 
 export const useLoaded = () => {
     const [loaded, setLoaded] = useState(false);
