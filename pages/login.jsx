@@ -14,14 +14,17 @@ const LogIn = () => {
   const csrf = useCSRF();
 
   const handleUserInput = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, error: '' });
   };
 
   const submitFormData = async () => {
     const res = await post('/login', formData, csrf);
-    if (!res.ok) return; // todo: show error message
+    if (!res.ok) {
+      const json = await res.json();
+      setFormData({ ...formData, error: json.error });
+      return;
+    }
     const json = await res.json();
-    console.log(json);
     if (json.url) {
       Router.push(json.url);
     }
@@ -79,6 +82,9 @@ const LogIn = () => {
                       >
                         Enter the Cyberpunk
                       </Button>
+                      {formData.error && (
+                        <p style={{ color: 'red' }}>{formData.error}</p>
+                      )}
                     </Box>
                   </Form>
                 </Grommet>

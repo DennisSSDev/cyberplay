@@ -22,7 +22,9 @@ const Dialog = props => {
   const [mission, setMission] = useState({});
   const getMission = async () => {
     const resp = await request(`/mission?id=${props.id}`);
-    if (!resp.ok) {
+    if (!res.ok) {
+      const json = await res.json();
+      setFormData({ ...formData, error: json.error });
       return;
     }
     const json = await resp.json();
@@ -37,7 +39,7 @@ const Dialog = props => {
   }, []);
 
   const handleUserInput = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, error: '' });
   };
 
   const submitFormData = async () => {
@@ -46,7 +48,16 @@ const Dialog = props => {
     if (!input) {
       return;
     }
-    await post('/addmessage', { message: input, missionID: props.id }, csrf);
+    const res = await post(
+      '/addmessage',
+      { message: input, missionID: props.id },
+      csrf,
+    );
+    if (!res.ok) {
+      const json = await res.json();
+      setFormData({ ...formData, error: json.error });
+      return;
+    }
     getMission();
   };
   return (
@@ -131,6 +142,9 @@ const Dialog = props => {
                       >
                         Send Response
                       </Button>
+                      {formData.error && (
+                        <p style={{ color: 'red' }}>{formData.error}</p>
+                      )}
                     </Box>
                   </Form>
                 </Grommet>

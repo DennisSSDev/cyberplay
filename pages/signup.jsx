@@ -23,7 +23,7 @@ const SignUp = () => {
   const csrf = useCSRF();
 
   const handleUserInput = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, error: '' });
   };
 
   const handleRadioInput = e => {
@@ -32,9 +32,12 @@ const SignUp = () => {
 
   const submitFormData = async () => {
     const res = await post('/signup', formData, csrf);
-    if (!res.ok) return; // todo: show error message
+    if (!res.ok) {
+      const json = await res.json();
+      setFormData({ ...formData, error: json.error });
+      return;
+    }
     const json = await res.json();
-    console.log(json);
     if (json.url) {
       Router.push(json.url);
     }
@@ -157,6 +160,9 @@ const SignUp = () => {
                       >
                         Enter the Cyberpunk
                       </Button>
+                      {formData.error && (
+                        <p style={{ color: 'red' }}>{formData.error}</p>
+                      )}
                     </Box>
                   </Form>
                 </Grommet>

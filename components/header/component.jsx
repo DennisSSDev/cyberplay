@@ -61,6 +61,11 @@ export const LoggedInHeaderComponent = () => {
               Quest Board
             </Button>
           </Link>
+          <Link href="/settings">
+            <Button style={{ margin: 0, marginRight: 20, marginTop: 15 }}>
+              Settings
+            </Button>
+          </Link>
           <div>
             <Button
               layer="disabled"

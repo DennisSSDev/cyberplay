@@ -1,3 +1,4 @@
+// index page that next.js will use
 import React from 'react';
 import { ThemeProvider, createTheme, Arwes, Frame, Button } from 'arwes';
 import { Form, FormField, Grommet, Box } from 'grommet';
@@ -8,7 +9,7 @@ import Router from 'next/router';
 
 const theme = createTheme({ animTime: 500 });
 
-const MissionMaker = () => {
+const Settings = () => {
   const [formData, setFormData] = React.useState({});
   const csrf = useCSRF();
 
@@ -17,15 +18,16 @@ const MissionMaker = () => {
   };
 
   const submitFormData = async () => {
-    const res = await post('/makemission', formData, csrf);
+    const res = await post('/changepass', formData, csrf);
     if (!res.ok) {
       const json = await res.json();
       setFormData({ ...formData, error: json.error });
       return;
     }
-    // the mission creation worked -> return to dashboard
+
     Router.push('/dashboard');
   };
+
   return (
     <>
       {csrf && (
@@ -44,7 +46,7 @@ const MissionMaker = () => {
               }}
             >
               <Frame style={{ marginBottom: 20, textAlign: 'center' }}>
-                <h1>Create Mission</h1>
+                <h1>Password Change</h1>
               </Frame>
               <Frame level={1} corners={4}>
                 <Grommet
@@ -56,15 +58,21 @@ const MissionMaker = () => {
                   <Form>
                     <Box width="medium" flex fill>
                       <FormField
-                        name="title"
-                        label="Mission Title"
-                        type="text"
+                        name="oldpass"
+                        label="Type Old Password"
+                        type="password"
                         onChange={handleUserInput}
                       />
                       <FormField
-                        name="description"
-                        label="Description"
-                        type="text"
+                        name="pass"
+                        label="Type New Password"
+                        type="password"
+                        onChange={handleUserInput}
+                      />
+                      <FormField
+                        name="pass2"
+                        label="Retype New Password"
+                        type="password"
                         onChange={handleUserInput}
                       />
                     </Box>
@@ -77,7 +85,7 @@ const MissionMaker = () => {
                         layer="success"
                         onClick={submitFormData}
                       >
-                        Generate Mission
+                        Update Password
                       </Button>
                       {formData.error && (
                         <p style={{ color: 'red' }}>{formData.error}</p>
@@ -94,9 +102,9 @@ const MissionMaker = () => {
   );
 };
 
-MissionMaker.getInitialProps = async ({ req, res }) => {
+Settings.getInitialProps = async ({ req, res }) => {
   isLoggedIn(req, res);
   return {};
 };
 
-export default MissionMaker;
+export default Settings;
