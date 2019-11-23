@@ -51,7 +51,10 @@ class MyDocument extends Document {
             name="description"
             content="Roleplaying Texting Cyberpunk Game "
           />
+          <meta name="theme-color" content="#029CBB" />
+          <meta name="twitter:card" content="summary_large_image" />
           <link rel="shortcut icon" href="static/favicon.ico" />
+          <link type="application/json+oembed" href="/provider.json" />
         </Head>
         <body>
           <Main />
