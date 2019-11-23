@@ -36,7 +36,21 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="description" content="Roleplaying Cyberpunk Game" />
+          <meta property="og:title" content="Cyber Play" />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://cyber-play.herokuapp.com" />
+          <meta
+            property="og:image"
+            content="https://cyber-play.herokuapp.com/cyberback.jpg"
+          />
+          <meta
+            property="og:description"
+            content="Roleplaying Texting Cyberpunk Game"
+          />
+          <meta
+            name="description"
+            content="Roleplaying Texting Cyberpunk Game "
+          />
           <link rel="shortcut icon" href="static/favicon.ico" />
         </Head>
         <body>
