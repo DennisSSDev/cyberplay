@@ -19,7 +19,7 @@ import {
   useUserData,
   post,
 } from '../util';
-import { Router } from 'next/router';
+import Router from 'next/router';
 
 const theme = createTheme({ animTime: 500 });
 
