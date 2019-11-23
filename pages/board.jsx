@@ -19,6 +19,7 @@ import {
   useUserData,
   post,
 } from '../util';
+import { Router } from 'next/router';
 
 const theme = createTheme({ animTime: 500 });
 
@@ -41,7 +42,7 @@ const Board = () => {
     <>
       {csrf && latestMissions && userData && userData.missions && (
         <ThemeProvider theme={theme}>
-          <Arwes animate background="/login_back.jpeg">
+          <Arwes animate background="/board_city.jpg">
             <div>
               <LoggedInHeaderComponent />
             </div>

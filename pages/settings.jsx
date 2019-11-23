@@ -32,7 +32,7 @@ const Settings = () => {
     <>
       {csrf && (
         <ThemeProvider theme={theme}>
-          <Arwes animate background="/login_back.jpeg">
+          <Arwes animate background="/passchange.jpg">
             <div>
               <LoggedInHeaderComponent />
             </div>

@@ -64,7 +64,7 @@ const Dialog = props => {
     <>
       {csrf && (
         <ThemeProvider theme={theme}>
-          <Arwes animate background="/login_back.jpeg">
+          <Arwes animate background="/city.jpg">
             <div>
               <LoggedInHeaderComponent />
             </div>

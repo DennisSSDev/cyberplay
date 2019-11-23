@@ -30,7 +30,7 @@ const MissionMaker = () => {
     <>
       {csrf && (
         <ThemeProvider theme={theme}>
-          <Arwes animate background="/login_back.jpeg">
+          <Arwes animate background="/maker.jpeg">
             <div>
               <LoggedInHeaderComponent />
             </div>
