@@ -22,8 +22,8 @@ const Dialog = props => {
   const [mission, setMission] = useState({});
   const getMission = async () => {
     const resp = await request(`/mission?id=${props.id}`);
-    if (!res.ok) {
-      const json = await res.json();
+    if (!resp.ok) {
+      const json = await resp.json();
       setFormData({ ...formData, error: json.error });
       return;
     }
