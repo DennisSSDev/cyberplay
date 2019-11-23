@@ -17,12 +17,12 @@ mongoose.Promise = global.Promise;
 const convertId = mongoose.Types.ObjectId;
 
 export interface UserDataModelInterface extends Document {
-  background: string;
-  skills: string;
-  motivation: string;
-  character: string;
-  isCreator: boolean;
-  missions: [mongoose.Types.ObjectId];
+  background: string; // the character's past history
+  skills: string; // what is the character good at
+  motivation: string; // what's driving the character
+  character: string; // the name of the avatar
+  isCreator: boolean; // can the user create new missions?
+  missions: [mongoose.Types.ObjectId]; // the missions the user signed up for
   owner: mongoose.Types.ObjectId; // the user that owns this data
 }
 

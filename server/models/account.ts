@@ -145,17 +145,6 @@ export class AccountModel {
   };
 
   /**
-   * Grabs user meta data such as username and creation date
-   */
-  static getUserMetaInfo = (id: string, callback: cb) => {
-    const _id = convertId(id);
-
-    return AccountSchema.findById(_id)
-      .select('username createdAt')
-      .exec(callback);
-  };
-
-  /**
    *  Call to make sure that the supplied data is from a valid user
    */
   static authenticate = (username: string, password: string, callback: cb) =>

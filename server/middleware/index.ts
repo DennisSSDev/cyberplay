@@ -5,6 +5,9 @@ interface ResponseError extends Error {
   code?: string;
 }
 
+/**
+ * Checks if the provided csrf data is valid before any post request
+ */
 export const csrfCheck = (
   err: ResponseError,
   _: Request,
@@ -83,6 +86,10 @@ export const isLoggedInJSON = (
   return;
 };
 
+/**
+ * Makes sure that every request
+ * has an enforced SSL rule
+ */
 export const enforceSSL = (
   req: Request,
   res: Response,

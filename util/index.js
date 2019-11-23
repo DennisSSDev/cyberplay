@@ -6,12 +6,21 @@ const fetchURL =
     ? `https://cyber-play.herokuapp.com`
     : 'http://localhost:3000';
 
+/**
+ * A syncronization effect that is used for react components that
+ * do not fetch data on mounting.
+ * This is done to allow the jss to sync for SSR
+ */
 export const useLoaded = () => {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => setLoaded(true), []);
   return loaded;
 };
 
+/**
+ * Middleware to streamline the GET request
+ * @param {*} from endpoint
+ */
 export const request = from =>
   fetch(`${fetchURL}${from}`, {
     method: 'GET',
@@ -21,6 +30,10 @@ export const request = from =>
     },
   });
 
+/**
+ * Middleware to allow the React component to ask
+ * for a csrf token
+ */
 export const useCSRF = () => {
   const [csrf, setCSRF] = useState('');
   const getCSRF = async () => {
@@ -34,6 +47,10 @@ export const useCSRF = () => {
   return csrf;
 };
 
+/**
+ * Mount for react components requiring the
+ * logged in user data
+ */
 export const useUserData = () => {
   const [data, setUserData] = useState({});
   const getData = async () => {
@@ -47,12 +64,15 @@ export const useUserData = () => {
   return data;
 };
 
+/**
+ * Mount for components that require
+ * the latest published missions on the server
+ */
 export const useLatestMissions = () => {
   const [missions, setMissions] = useState({});
   const getMissions = async () => {
     const res = await request('/missions');
     const json = await res.json();
-    console.log(json);
     setMissions(json);
   };
   useEffect(() => {
@@ -61,6 +81,10 @@ export const useLatestMissions = () => {
   return missions;
 };
 
+/**
+ * Mount for components that require missions
+ * that the logged in user signed up for
+ */
 export const useUserMissions = () => {
   const [missionsData, setMissions] = useState({});
   const getMissions = async () => {
@@ -74,20 +98,13 @@ export const useUserMissions = () => {
   return missionsData;
 };
 
-/*
-export const useAuth = () => {
-    const [auth, setAuth] = useState(false);
-    const getAuth = async () => {
-        const res = await request('/auth');
-        const json = await res.json();
-        setAuth(json.login);
-    };
-    useEffect(() => {
-        getAuth();
-    }, []);
-    return auth;
-};*/
-
+/**
+ * Middleware to streamline the POST request process
+ * @param {*} endpoint
+ * @param {*} data JSON data to be sent to the endpoint
+ * @param {*} csrfToken
+ * you will most likely need a useCSRF if you intend to make a post request
+ */
 export const post = (endpoint, data, csrfToken) => {
   return fetch(`${fetchURL}${endpoint}`, {
     method: 'POST',

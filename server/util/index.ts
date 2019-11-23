@@ -9,10 +9,10 @@ const isStringCheck = (...args: any[]) => {
   args.forEach(value => {
     if (typeof value !== 'undefined') {
       if (typeof value !== 'string') {
-        throw new Error('provided parameter is not a string');
+        throw new Error('One of the provided fields is invalid');
       }
     } else {
-      throw new Error('provided parameter is undefined');
+      throw new Error('One of the provided fields is invalid');
     }
   });
 };
@@ -26,10 +26,10 @@ export const isStringCheckArray = (args: any[]) => {
     args.forEach(value => {
       if (typeof value !== 'undefined') {
         if (typeof value !== 'string') {
-          throw new Error('provided parameter is not a string');
+          throw new Error('One of the provided fields is invalid');
         }
       } else {
-        throw new Error('provided parameter is undefined');
+        throw new Error('One of the provided fields is invalid');
       }
     });
   }

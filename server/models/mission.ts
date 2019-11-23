@@ -16,10 +16,10 @@ mongoose.Promise = global.Promise;
 export const convertId = mongoose.Types.ObjectId;
 
 export interface MissionModelInterface extends Document {
-  title: string;
-  description: string;
-  messages: [string];
-  createdAt: Date;
+  title: string; // the title of the mission
+  description: string; // the full detail of the mission
+  messages: [string]; // what did the users type while completing the mission
+  createdAt: Date; // when was the mission created
 }
 
 /**
@@ -91,6 +91,9 @@ export class MissionModel {
     return MissionSchema.findOne(search, callback);
   };
 
+  /**
+   * Adds a new message to the Mission message log (array)
+   */
   static addMissionMessage = (
     message: string,
     missionID: string,

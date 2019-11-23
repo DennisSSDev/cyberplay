@@ -39,7 +39,6 @@ const Dashboard = () => {
   const data = useUserData();
   const loaded = useLoaded();
   const userMissions = useUserMissions();
-  console.log(userMissions);
 
   const activateCreatorMode = async () => {
     const res = await post('/makecreator', {}, csrf);

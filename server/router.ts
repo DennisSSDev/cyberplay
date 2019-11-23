@@ -46,7 +46,7 @@ export const router = (input: RouterInput): void => {
     app.render(req, res, '/dialog', queryParams);
   });
 
-  // Default catch-all renders Next app. It handles teh rendering
+  // Default catch-all renders Next app. It handles the rendering
   server.get('*', (req, res) => {
     // res.set({
     //   'Cache-Control': 'public, max-age=3600'

@@ -11,7 +11,6 @@ interface Account {
   signup: func;
   logout: func;
   changePassword: func;
-  meta: func;
 }
 
 /**
@@ -38,7 +37,6 @@ const login = (req: Request, res: Response) => {
       return res.status(401).json({ error: 'incorrect username or password' });
     }
     if (req && req.session) {
-      console.log('logged in');
       req.session.account = AccountModel.toAPI(account);
     }
     return res.json({ url: '/dashboard' });
@@ -116,7 +114,7 @@ const signup = (req: Request, res: Response) => {
       if (err.code === 11000) {
         return res.status(400).json({ error: 'Username already used' });
       }
-      return res.status(400).json({ error: 'an error occured' });
+      return res.status(400).json({ error: 'The data entered was invalid' });
     });
   });
 };
@@ -125,7 +123,6 @@ const signup = (req: Request, res: Response) => {
  * kills the user's session and returns him into a public session
  */
 const logout = (req: Request, res: Response) => {
-  console.log("you're being logged out");
   try {
     if (req.session) {
       req.session.destroy(() => {});
@@ -172,25 +169,12 @@ const changePassword = (req: Request, res: Response) => {
   );
 };
 
-const meta = (req: Request, res: Response) => {
-  if (!req.session || !req.session.account) {
-    return res.status(400).json({ error: 'there is no active session' });
-  }
-  return AccountModel.getUserMetaInfo(req.session.account._id, (err, doc) => {
-    if (err) {
-      return res.status(400).json({ error: err });
-    }
-    return res.json(doc);
-  });
-};
-
 const Account: Account = {
   getToken,
   login,
   signup,
   logout,
   changePassword,
-  meta,
 };
 
 export default Account;
