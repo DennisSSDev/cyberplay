@@ -1,15 +1,14 @@
-// index page that next.js will use
 import React from 'react';
 import { ThemeProvider, createTheme, Arwes, Frame, Button } from 'arwes';
 import { Form, FormField, Grommet, Box } from 'grommet';
 import './static/index.css';
-import HeaderComponent from './../components/header/component';
-import { post, useCSRF, isLoggedOut } from '../util';
+import { LoggedInHeaderComponent } from './../components/header/component';
+import { post, useCSRF, isLoggedIn } from '../util';
 import Router from 'next/router';
 
 const theme = createTheme({ animTime: 500 });
 
-const LogIn = () => {
+const MissionMaker = () => {
   const [formData, setFormData] = React.useState({});
   const csrf = useCSRF();
 
@@ -18,13 +17,10 @@ const LogIn = () => {
   };
 
   const submitFormData = async () => {
-    const res = await post('/login', formData, csrf);
-    if (!res.ok) return; // todo: show error message
-    const json = await res.json();
-    console.log(json);
-    if (json.url) {
-      Router.push(json.url);
-    }
+    const res = await post('/makemission', formData, csrf);
+    if (!res.ok) return;
+    // the mission creation worked -> return to dashboard
+    Router.push('/dashboard');
   };
   return (
     <>
@@ -32,7 +28,7 @@ const LogIn = () => {
         <ThemeProvider theme={theme}>
           <Arwes animate background="/login_back.jpeg">
             <div>
-              <HeaderComponent />
+              <LoggedInHeaderComponent />
             </div>
             <div
               style={{
@@ -44,7 +40,7 @@ const LogIn = () => {
               }}
             >
               <Frame style={{ marginBottom: 20, textAlign: 'center' }}>
-                <h1>Welcome Back</h1>
+                <h1>Create Mission</h1>
               </Frame>
               <Frame level={1} corners={4}>
                 <Grommet
@@ -56,15 +52,15 @@ const LogIn = () => {
                   <Form>
                     <Box width="medium" flex fill>
                       <FormField
-                        name="username"
-                        label="UserName"
+                        name="title"
+                        label="Mission Title"
                         type="text"
                         onChange={handleUserInput}
                       />
                       <FormField
-                        name="pass"
-                        label="Password"
-                        type="password"
+                        name="description"
+                        label="Description"
+                        type="text"
                         onChange={handleUserInput}
                       />
                     </Box>
@@ -77,7 +73,7 @@ const LogIn = () => {
                         layer="success"
                         onClick={submitFormData}
                       >
-                        Enter the Cyberpunk
+                        Generate Mission
                       </Button>
                     </Box>
                   </Form>
@@ -91,9 +87,9 @@ const LogIn = () => {
   );
 };
 
-LogIn.getInitialProps = async ({ req, res }) => {
-  isLoggedOut(req, res);
+MissionMaker.getInitialProps = async ({ req, res }) => {
+  isLoggedIn(req, res);
   return {};
 };
 
-export default LogIn;
+export default MissionMaker;

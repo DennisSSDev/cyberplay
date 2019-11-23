@@ -6,43 +6,43 @@ import { UserDataSchema } from './../models/userdata';
 type func = (req: Request, res: Response) => void;
 
 interface Account {
-    getToken: func;
-    login: func;
-    signup: func;
-    logout: func;
-    changePassword: func;
-    meta: func;
+  getToken: func;
+  login: func;
+  signup: func;
+  logout: func;
+  changePassword: func;
+  meta: func;
 }
 
 /**
  * Gets the CSRF token for forms
  */
 const getToken = (req: Request, res: Response) => {
-    const csrfTokenJSON = {
-        csrfToken: req.csrfToken(),
-    };
-    res.json(csrfTokenJSON);
+  const csrfTokenJSON = {
+    csrfToken: req.csrfToken(),
+  };
+  res.json(csrfTokenJSON);
 };
 
 /**
  * validates whether the user can login
  */
 const login = (req: Request, res: Response) => {
-    const { username, pass } = req.body;
+  const { username, pass } = req.body;
 
-    if (!username || !pass) {
-        return res.status(400).json({ error: 'All fields are required' });
+  if (!username || !pass) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+  return AccountModel.authenticate(username, pass, (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'incorrect username or password' });
     }
-    return AccountModel.authenticate(username, pass, (err, account) => {
-        if (err || !account) {
-            return res.status(401).json({ error: 'incorrect username or password' });
-        }
-        if (req && req.session) {
-            console.log('logged in');
-            req.session.account = AccountModel.toAPI(account);
-        }
-        return res.json({ url: '/dashboard' });
-    });
+    if (req && req.session) {
+      console.log('logged in');
+      req.session.account = AccountModel.toAPI(account);
+    }
+    return res.json({ url: '/dashboard' });
+  });
 };
 
 /**
@@ -50,75 +50,92 @@ const login = (req: Request, res: Response) => {
  * and determines if the user is valid or not
  */
 const signup = (req: Request, res: Response) => {
-    const { username, pass, pass2, background, skills, motivation, character } = req.body;
-    try {
-        isStringCheck(username, pass, pass2, background, skills, motivation, character);
-    } catch (err) {
-        return res.status(400).json({ error: err.message });
-    }
-    if (pass !== pass2) {
-        return res.status(400).json({ error: `Passwords don't match` });
-    }
+  const {
+    username,
+    pass,
+    pass2,
+    background,
+    skills,
+    motivation,
+    character,
+  } = req.body;
+  try {
+    isStringCheck(
+      username,
+      pass,
+      pass2,
+      background,
+      skills,
+      motivation,
+      character,
+    );
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (pass !== pass2) {
+    return res.status(400).json({ error: `Passwords don't match` });
+  }
 
-    return AccountModel.genHash(pass, (salt, hash) => {
-        const accountData = {
-            username,
-            salt,
-            password: hash,
-        };
-        const newAccount = new AccountSchema(accountData);
-        const savePromise = newAccount.save();
-        savePromise
+  return AccountModel.genHash(pass, (salt, hash) => {
+    const accountData = {
+      username,
+      salt,
+      password: hash,
+    };
+
+    const newAccount = new AccountSchema(accountData);
+    const savePromise = newAccount.save();
+    savePromise
+      .then(() => {
+        if (req && req.session) {
+          req.session.account = AccountModel.toAPI(newAccount);
+          return;
+        }
+        throw Error('Invalid session');
+      })
+      .then(() => {
+        if (req && req.session) {
+          const newUserData = new UserDataSchema({
+            background,
+            skills,
+            motivation,
+            character,
+            owner: req.session.account._id,
+          });
+          newUserData
+            .save()
             .then(() => {
-                if (req && req.session) {
-                    req.session.account = AccountModel.toAPI(newAccount);
-                    return;
-                }
-                throw Error('Invalid session');
+              return res.json({ url: '/dashboard' });
             })
-            .then(() => {
-                if (req && req.session) {
-                    const newUserData = new UserDataSchema({
-                        background,
-                        skills,
-                        motivation,
-                        character,
-                        owner: req.session.account._id,
-                    });
-                    newUserData
-                        .save()
-                        .then(() => {
-                            return res.json({ url: '/dashboard' });
-                        })
-                        .catch(err => {
-                            return res.status(400).json({ error: err });
-                        });
-                }
+            .catch(err => {
+              return res.status(400).json({ error: err });
             });
-        savePromise.catch(err => {
-            if (err.code === 11000) {
-                return res.status(400).json({ error: 'Username already used' });
-            }
-            return res.status(400).json({ error: 'an error occured' });
-        });
+        }
+      });
+    savePromise.catch(err => {
+      if (err.code === 11000) {
+        return res.status(400).json({ error: 'Username already used' });
+      }
+      return res.status(400).json({ error: 'an error occured' });
     });
+  });
 };
 
 /**
  * kills the user's session and returns him into a public session
  */
 const logout = (req: Request, res: Response) => {
-    console.log("you're being logged out");
-    try {
-        if (req.session) {
-            req.session.destroy(() => {});
-            res.json({ url: '/' });
-            return;
-        }
-        throw new Error('there is no active session');
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+  console.log("you're being logged out");
+  try {
+    if (req.session) {
+      req.session.destroy(() => {});
+      res.json({ url: '/' });
+      return;
     }
+    throw new Error('there is no active session');
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
 /**
@@ -127,48 +144,53 @@ const logout = (req: Request, res: Response) => {
  * and the entered new password (twice) match, update happens
  */
 const changePassword = (req: Request, res: Response) => {
-    if (!req.session || !req.session.account) {
-        return res.status(400).json({ error: 'there is no active session' });
-    }
-    const { oldpass, pass, pass2 } = req.body;
-    try {
-        isStringCheck(oldpass, pass, pass2);
-    } catch (err) {
+  if (!req.session || !req.session.account) {
+    return res.status(400).json({ error: 'there is no active session' });
+  }
+  const { oldpass, pass, pass2 } = req.body;
+  try {
+    isStringCheck(oldpass, pass, pass2);
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (pass !== pass2) {
+    return res.status(400).json({ error: 'passwords do not match' });
+  }
+  if (oldpass === '') {
+    return res.status(400).json({ error: 'your old password is invalid' });
+  }
+  return AccountModel.updateUserPassword(
+    req.session.account._id,
+    oldpass,
+    pass,
+    err => {
+      if (err) {
         return res.status(400).json({ error: err.message });
-    }
-    if (pass !== pass2) {
-        return res.status(400).json({ error: 'passwords do not match' });
-    }
-    if (oldpass === '') {
-        return res.status(400).json({ error: 'your old password is invalid' });
-    }
-    return AccountModel.updateUserPassword(req.session.account._id, oldpass, pass, err => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
-        }
-        return res.json({ result: 'user password updated' });
-    });
+      }
+      return res.json({ result: 'user password updated' });
+    },
+  );
 };
 
 const meta = (req: Request, res: Response) => {
-    if (!req.session || !req.session.account) {
-        return res.status(400).json({ error: 'there is no active session' });
+  if (!req.session || !req.session.account) {
+    return res.status(400).json({ error: 'there is no active session' });
+  }
+  return AccountModel.getUserMetaInfo(req.session.account._id, (err, doc) => {
+    if (err) {
+      return res.status(400).json({ error: err });
     }
-    return AccountModel.getUserMetaInfo(req.session.account._id, (err, doc) => {
-        if (err) {
-            return res.status(400).json({ error: err });
-        }
-        return res.json(doc);
-    });
+    return res.json(doc);
+  });
 };
 
 const Account: Account = {
-    getToken,
-    login,
-    signup,
-    logout,
-    changePassword,
-    meta,
+  getToken,
+  login,
+  signup,
+  logout,
+  changePassword,
+  meta,
 };
 
 export default Account;

@@ -4,72 +4,76 @@ import Router from 'next/router';
 import { request } from './../../util';
 
 const submitLogoutRequest = async () => {
-    console.log('submitting');
-    const res = await request('/logout');
-    if (!res.ok) return;
-    const json = await res.json();
-    if (json.url) {
-        Router.push(json.url);
-    }
+  const res = await request('/logout');
+  if (!res.ok) return;
+  const json = await res.json();
+  if (json.url) {
+    Router.push(json.url);
+  }
 };
 
 const VisualComponent = () => {
-    return (
-        <Header>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center ',
-                    justifyContent: 'space-between',
-                }}
-            >
-                <h1 style={{ margin: 0, paddingLeft: 50, marginTop: 8 }}>
-                    <Link href="/">Cyber Play</Link>
-                </h1>
-                <div style={{ display: 'flex', flexDirection: 'row', marginRight: 50 }}>
-                    <Link href="/login">
-                        <Button style={{ margin: 0, marginRight: 20, marginTop: 15 }}>Login</Button>
-                    </Link>
-                    <Link href="/signup">
-                        <Button style={{ margin: 0, marginTop: 15 }}>Sign up</Button>
-                    </Link>
-                </div>
-            </div>
-        </Header>
-    );
+  return (
+    <Header>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center ',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h1 style={{ margin: 0, paddingLeft: 50, marginTop: 8 }}>
+          <Link href="/">Cyber Play</Link>
+        </h1>
+        <div style={{ display: 'flex', flexDirection: 'row', marginRight: 50 }}>
+          <Link href="/login">
+            <Button style={{ margin: 0, marginRight: 20, marginTop: 15 }}>
+              Login
+            </Button>
+          </Link>
+          <Link href="/signup">
+            <Button style={{ margin: 0, marginTop: 15 }}>Sign up</Button>
+          </Link>
+        </div>
+      </div>
+    </Header>
+  );
 };
 
 export const LoggedInHeaderComponent = () => {
-    return (
-        <Header>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center ',
-                    justifyContent: 'space-between',
-                }}
+  return (
+    <Header>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center ',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h1 style={{ margin: 0, paddingLeft: 50, marginTop: 8 }}>
+          <Link href="/">Cyber Play</Link>
+        </h1>
+        <div style={{ display: 'flex', flexDirection: 'row', marginRight: 50 }}>
+          <Link href="/board">
+            <Button style={{ margin: 0, marginRight: 20, marginTop: 15 }}>
+              Quest Board
+            </Button>
+          </Link>
+          <div>
+            <Button
+              layer="disabled"
+              style={{ margin: 0, marginTop: 15 }}
+              onClick={submitLogoutRequest}
             >
-                <h1 style={{ margin: 0, paddingLeft: 50, marginTop: 8 }}>
-                    <Link href="/">Cyber Play</Link>
-                </h1>
-                <div style={{ display: 'flex', flexDirection: 'row', marginRight: 50 }}>
-                    <Link href="/board">
-                        <Button style={{ margin: 0, marginRight: 20, marginTop: 15 }}>Quest Board</Button>
-                    </Link>
-                    <Link href="/dialog">
-                        <Button style={{ margin: 0, marginTop: 15, marginRight: 20 }}>Dialog</Button>
-                    </Link>
-                    <div>
-                        <Button layer="disabled" style={{ margin: 0, marginTop: 15 }} onClick={submitLogoutRequest}>
-                            Log Out
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </Header>
-    );
+              Log Out
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Header>
+  );
 };
 
 const HeaderComponent = VisualComponent;

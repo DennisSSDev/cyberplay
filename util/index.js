@@ -1,34 +1,77 @@
 import { useEffect, useState } from 'react';
 import fetch from 'isomorphic-unfetch';
 
-const fetchURL = process.env.NODE_ENV === 'production' ? `https://cyber-play.herokuapp.com` : 'http://localhost:3000';
+const fetchURL =
+  process.env.NODE_ENV === 'production'
+    ? `https://cyber-play.herokuapp.com`
+    : 'http://localhost:3000';
 
 export const useLoaded = () => {
-    const [loaded, setLoaded] = useState(false);
-    useEffect(() => setLoaded(true), []);
-    return loaded;
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => setLoaded(true), []);
+  return loaded;
 };
 
 export const request = from =>
-    fetch(`${fetchURL}${from}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
-    });
+  fetch(`${fetchURL}${from}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
 
 export const useCSRF = () => {
-    const [csrf, setCSRF] = useState('');
-    const getCSRF = async () => {
-        const res = await request('/token');
-        const json = await res.json();
-        setCSRF(json.csrfToken);
-    };
-    useEffect(() => {
-        getCSRF();
-    }, []);
-    return csrf;
+  const [csrf, setCSRF] = useState('');
+  const getCSRF = async () => {
+    const res = await request('/token');
+    const json = await res.json();
+    setCSRF(json.csrfToken);
+  };
+  useEffect(() => {
+    getCSRF();
+  }, []);
+  return csrf;
+};
+
+export const useUserData = () => {
+  const [data, setUserData] = useState({});
+  const getData = async () => {
+    const res = await request('/userdata');
+    const json = await res.json();
+    setUserData(json);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  return data;
+};
+
+export const useLatestMissions = () => {
+  const [missions, setMissions] = useState({});
+  const getMissions = async () => {
+    const res = await request('/missions');
+    const json = await res.json();
+    console.log(json);
+    setMissions(json);
+  };
+  useEffect(() => {
+    getMissions();
+  }, []);
+  return missions;
+};
+
+export const useUserMissions = () => {
+  const [missionsData, setMissions] = useState({});
+  const getMissions = async () => {
+    const res = await request('/missionsbyid');
+    const json = await res.json();
+    setMissions(json);
+  };
+  useEffect(() => {
+    getMissions();
+  }, []);
+  return missionsData;
 };
 
 /*
@@ -46,15 +89,15 @@ export const useAuth = () => {
 };*/
 
 export const post = (endpoint, data, csrfToken) => {
-    return fetch(`${fetchURL}${endpoint}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            'CSRF-token': csrfToken,
-        },
-        body: JSON.stringify(data),
-    });
+  return fetch(`${fetchURL}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'CSRF-token': csrfToken,
+    },
+    body: JSON.stringify(data),
+  });
 };
 
 /**
@@ -63,18 +106,18 @@ export const post = (endpoint, data, csrfToken) => {
  * otherwise reroute to dashboard
  */
 export const isLoggedOut = (req, res) => {
-    if (req && req.session && req.session.account) {
-        res.redirect('/dashboard');
-        res.end();
-    }
+  if (req && req.session && req.session.account) {
+    res.redirect('/dashboard');
+    res.end();
+  }
 };
 
 /**
  * check for whether the user is logged in
  */
 export const isLoggedIn = (req, res) => {
-    if (req && (!req.session || !req.session.account)) {
-        res.redirect('/login');
-        res.end();
-    }
+  if (req && (!req.session || !req.session.account)) {
+    res.redirect('/login');
+    res.end();
+  }
 };

@@ -16,10 +16,10 @@ mongoose.Promise = global.Promise;
 export const convertId = mongoose.Types.ObjectId;
 
 export interface MissionModelInterface extends Document {
-    title: string;
-    description: string;
-    messages: [string];
-    createdAt: Date;
+  title: string;
+  description: string;
+  messages: [string];
+  createdAt: Date;
 }
 
 /**
@@ -28,62 +28,96 @@ export interface MissionModelInterface extends Document {
 export type cb = (...args: any[]) => void;
 
 const schema = new Schema({
-    title: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    description: {
-        type: String,
-        required: true,
-    },
-    messages: {
-        type: [String],
-        default: [],
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
+  title: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  messages: {
+    type: [String],
+    default: [],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-export const MissionSchema = mongoose.model<MissionModelInterface>('Mission', schema);
+export const MissionSchema = mongoose.model<MissionModelInterface>(
+  'Mission',
+  schema,
+);
 
 export class MissionModel {
-    /**
-     * Retrieves the latest created missions
-     * based on the specified amount.
-     * Excludes the mission's message board.
-     */
-    static getLatestMissions = (amount: number, callback: cb) => {
-        return MissionSchema.find()
-            .sort({ _id: -1 })
-            .limit(amount)
-            .select('title description createdAt')
-            .exec(callback);
-    };
+  /**
+   * Retrieves the latest created missions
+   * based on the specified amount.
+   * Excludes the mission's message board.
+   */
+  static getLatestMissions = (amount: number, callback: cb) => {
+    return MissionSchema.find()
+      .sort({ _id: -1 })
+      .limit(amount)
+      .select('title description createdAt')
+      .exec(callback);
+  };
 
-    /**
-     * Returns the missions by the given ids
-     * Excludes the mission's message board.
-     */
-    static getMissionsByIDs = (missionIDs: [mongoose.Types.ObjectId], callback: cb) => {
-        return MissionSchema.find({
-            _id: { $in: missionIDs },
-        })
-            .select('title description createdAt')
-            .exec(callback);
-    };
+  /**
+   * Returns the missions by the given ids
+   * Excludes the mission's message board.
+   */
+  static getMissionsByIDs = (
+    missionIDs: [mongoose.Types.ObjectId],
+    callback: cb,
+  ) => {
+    return MissionSchema.find({
+      _id: { $in: missionIDs },
+    })
+      .select('title description createdAt')
+      .exec(callback);
+  };
 
-    /**
-     * Retrieves a mission based on the provided id.
-     */
-    static getMissionByID = (missionID: string, callback: cb) => {
-        const search = {
-            _id: convertId(missionID),
-        };
-        return MissionSchema.findOne(search, callback);
+  /**
+   * Retrieves a mission based on the provided id.
+   */
+  static getMissionByID = (missionID: string, callback: cb) => {
+    const search = {
+      _id: convertId(missionID),
     };
+    return MissionSchema.findOne(search, callback);
+  };
+
+  static addMissionMessage = (
+    message: string,
+    missionID: string,
+    callback: cb,
+  ) => {
+    MissionModel.getMissionByID(missionID, (err, doc) => {
+      if (err) {
+        return callback(err);
+      }
+      if (!doc) {
+        return callback('document could not be found');
+      }
+      const { messages } = doc;
+      if (!messages) {
+        return callback('the messages parameter doesnt exist on this doc');
+      }
+      messages.push(message);
+      const copy = doc;
+      copy.messages = messages;
+      return MissionSchema.updateOne({ _id: copy._id }, copy, error => {
+        if (error) {
+          return callback(error);
+        }
+        return callback();
+      });
+    });
+  };
 }
 
 Object.seal(MissionModel);
