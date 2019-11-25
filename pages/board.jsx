@@ -61,7 +61,15 @@ const Board = () => {
               <Frame style={{ marginBottom: 10, textAlign: 'center' }}>
                 <h3>Find and select a task you would like to undertake</h3>
               </Frame>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}
+              >
                 {Object.keys(latestMissions).length > 0 &&
                   Object.keys(latestMissions).map(v => {
                     const date = new Date(latestMissions[v].createdAt);
@@ -80,6 +88,7 @@ const Board = () => {
                                 margin: 10,
                                 display: 'flex',
                                 flexDirection: 'column',
+                                minWidth: 400,
                               }}
                             >
                               <div>

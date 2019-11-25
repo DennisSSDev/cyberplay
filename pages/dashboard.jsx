@@ -216,9 +216,11 @@ const Dashboard = () => {
                       textAlign: 'center',
                     }}
                   >
-                    <Words animate layer="disabled">
-                      No Signed up missions
-                    </Words>
+                    <Frame level={2} corners={5}>
+                      <Words animate layer="disabled">
+                        No Signed up missions
+                      </Words>
+                    </Frame>
                   </h3>
                 )}
               </div>
