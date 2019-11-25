@@ -66,8 +66,6 @@ const Board = () => {
                   display: 'flex',
                   flexDirection: 'row',
                   flexWrap: 'wrap',
-                  marginLeft: 10,
-                  marginRight: 10,
                 }}
               >
                 {Object.keys(latestMissions).length > 0 &&
@@ -80,7 +78,10 @@ const Board = () => {
                       return null;
                     }
                     return (
-                      <div key={latestMissions[v].title}>
+                      <div
+                        key={latestMissions[v].title}
+                        style={{ marginLeft: 10, marginRight: 10 }}
+                      >
                         <Appear>
                           <Frame level={2} corners={5}>
                             <div
