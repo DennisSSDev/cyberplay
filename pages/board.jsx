@@ -80,7 +80,11 @@ const Board = () => {
                     return (
                       <div
                         key={latestMissions[v].title}
-                        style={{ marginLeft: 10, marginRight: 10 }}
+                        style={{
+                          marginLeft: 10,
+                          marginRight: 10,
+                          marginTop: 10,
+                        }}
                       >
                         <Appear>
                           <Frame level={2} corners={5}>
