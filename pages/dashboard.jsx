@@ -217,9 +217,9 @@ const Dashboard = () => {
                     }}
                   >
                     <Frame level={2} corners={5}>
-                      <Words animate layer="disabled">
-                        No Signed up missions
-                      </Words>
+                      <div style={{ margin: 5 }}>
+                        <Words animate>No Signed up missions</Words>
+                      </div>
                     </Frame>
                   </h3>
                 )}
